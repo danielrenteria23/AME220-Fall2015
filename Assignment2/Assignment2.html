@@ -160,14 +160,15 @@
             var startUp = function()
             {
                 slideShow.initialize(obj, "standard", 0);
+                alert("Initial animation is set to standard.");
             }
         </script>
     </head>
     <body onload="startUp()">
         <div id='container'> </div>
-        <button style='left:50%; color:black; opacity:.5' class='nav' onclick='javascript:slideShow.switchAnim()'><b>Toggle Animation</b></a>
-        <button style='left:2%; color:black; width:100px; height:50px; opacity:0.5' class='nav' onclick='javascript:slideShow.goPrev()'><b>Previous</b></a>
-        <button style='right:2%; color: black; width:100px; height:50px; opacity:0.5' class='nav' onclick='javascript:slideShow.goNext()'><b>Next</b></a>
+        <button style='left:50%; color:black; opacity:.6' class='nav' onclick='javascript:slideShow.switchAnim()'><b>Toggle Animation</b></a>
+        <button style='left:2%; color:black; width:100px; height:50px; opacity:0.6' class='nav' onclick='javascript:slideShow.goPrev()'><b>Previous</b></a>
+        <button style='right:2%; color: black; width:100px; height:50px; opacity:0.6' class='nav' onclick='javascript:slideShow.goNext()'><b>Next</b></a>
     </body>
 </html>
 
