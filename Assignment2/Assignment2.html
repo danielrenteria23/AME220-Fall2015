@@ -1,46 +1,173 @@
+<!DOCTYPE html>
 <html>
-<head>
-<title>Daniel Renteria's Second Assignment!</title>
-<script src="jquery-1.11.3.js" type="text/javascript"></script>
-<script src="jquery.easing.1.3.js" type="text/javascript"></script>
-<script src="test.js" type="text/javascript"></script>
-<style>
-    
-    
-    h1
-    {color: maroon;}
-    
-    .buttons
-    {
-        height:50px;
-        width:120px;
-        display:block;
-        border:solid 3px maroon;
-        text-align: center;
-        text-decoration: none;
-        margin-bottom: 10px;
-        line-height:50px
+    <head>
+        <title>Daniel Renteria's Second Assignment!</title>
+        <script src="jquery-1.11.3.js" type="text/javascript"></script>
+        <style>
+            html, body
+            {
+                background-color: black;
+                margin: 0px;
+                height: 100%;
+                min-height: 100%;
+                overflow: hidden;
+            }
+            .nav
+            {
+                position: fixed;
+                display: block;
+                bottom: 10px;
+                color: white;
+            }
+            .slide
+            {
+                width: 100%;
+                height: 100%;
+                background-repeat: no-repeat;
+                background-position: 50% 50%;
+                background-color: black;
+                background-size: contain;
+                position: absolute;
+            }
+        #container
+            {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <script>
+            var obj =
+            [
+             "http://proof.nationalgeographic.com/files/2015/09/prod-yourshot-1000568-6292445.jpg",
+             "http://proof.nationalgeographic.com/files/2015/06/prod-yourshot-998484-5997062-web.jpg",
+             "http://proof.nationalgeographic.com/files/2015/06/prod-yourshot-998012-5998151.jpg",
+             "http://proof.nationalgeographic.com/files/2015/07/prod-yourshot-345431-6054565.jpg",
+             "http://proof.nationalgeographic.com/files/2015/07/prod-yourshot-1042245-6258060.jpg"
+             ];
+             
+             var currentSlide = 0;
+             var animation = "standard";
+             
+             var slideShow =
+             {
+                initialize:function(obj, type, firstSlide)
+                {
+                    animation = type || "fade";
+                    slideShow.obj = obj;
+                    var outS = "";
+                    outS = outS + "<div style='background-image:url(" + obj[firstSlide]+  ")' class='slide' id='slide" + firstSlide + "'> </div>";
+                    document.getElementById("container").innerHTML = outS;
+                },
+                goPrev:function()
+                {
+                    var bw = $("body").width() + "px";
+                    var next = currentSlide;
+                    if(currentSlide < 1)
+                    {
+                        var next = 4;
+                    }
+                    else
+                    {
+                        var next = currentSlide-1;
+                    }
+                    
+                    if(animation === "standard")
+                    {
+                        
+                        var outS = "";
+                        outS = outS + "<div style='background-image:url(" + obj[next]+  ")' class='slide' id='slide" + next + "'> </div>";
+                        document.getElementById("container").innerHTML = outS;
+                    }
+                    if(animation == "fade")
+                    {
+                        var outS = "";
+                        outS = outS + "<div style='background-image:url(" + obj[next]+  ")' class='slide' id='slide" + next + "'> </div>";
+                        document.getElementById("container").innerHTML = outS;
+                        $(".slide").fadeOut(10);
+                        $(".slide").delay(100).fadeIn();
+                    }
+                    if(animation == "slide")
+                    {
+                        var outS = "";
+                        outS = outS + "<div style='background-image:url(" + obj[next]+  ")' class='slide' id='slide" + next + "'> </div>";
+                        document.getElementById("container").innerHTML = outS;
+                        $(".slide").fadeOut(10);
+                        $(".slide").stop().animate({"margin-left": "-" +  bw},0).fadeIn(20).animate({"margin-left":"0px"},400)
+                    }
+                    
+                    currentSlide = next;
+                },
+                goNext:function()
+                {
+                    var bw = $("body").width() + "px";
+                    var next = currentSlide + 1;
+                    if(next == obj.length)
+                    {
+                        next = 0;
+                    }
+                    if(animation === "standard")
+                    {
+                        var outS = "";
+                        outS = outS + "<div style='background-image:url(" + obj[next]+  ")' class='slide' id='slide" + next + "'> </div>";
+                        document.getElementById("container").innerHTML = outS;
+
+                    }
+                    if(animation == "fade")
+                    {
+                        var outS = "";
+                        outS = outS + "<div style='background-image:url(" + obj[next]+  ")' class='slide' id='slide" + next + "'> </div>";
+                        document.getElementById("container").innerHTML = outS;
+                        $(".slide").fadeOut(10);
+                        $(".slide").delay(100).fadeIn();
+                    }
+                    if (animation == "slide")
+                    {
+                        var outS = "";
+                        outS = outS + "<div style='background-image:url(" + obj[next]+  ")' class='slide' id='slide" + next + "'> </div>";
+                        document.getElementById("container").innerHTML = outS;
+                        $(".slide").fadeOut(10);
+                        $(".slide").stop().animate({"margin-left": "-" +  bw},0).fadeIn(20).animate({"margin-left":"0px"},400)
+                    }
+                    
+                    
+                    currentSlide = next;
+                },
+                
+                switchAnim:function()
+                {
+                    if (animation == "standard")
+                    {
+                        animation = "fade";
+                        alert("Animation is now set to fade.");
+                    }
+                    else
+                    {
+                        if (animation == "fade")
+                        {
+                            animation = "slide";
+                            alert("Animation is now set to slide.");
+                        }
+                        else if (animation == "slide")
+                        {
+                            animation = "standard";
+                            alert("Animation is now set to standard.");
+                        }
+                    }
+
+                },
+            }
         
-    }
-
-    .body
-    {
-        background-color: darkgray;
-        margin: 10;
-        margin-top: 1;
-    }
-
-</style>
-
-<body class="body">
-    <h1>Assignment 2 by <i>Daniel Renteria</i></h1>
-    <h3>AME 220 Fall 2015</h3>
-    <h3><a href="AssignmentDoc.pdf" target="_blank">Assignment Details</h3>
-    <div id="container">>
-        
-    </div>
-    <a href='javascript:goPrev()'>Previous</a>
-    <a href='javascript:goNext()'>Next</a>
-
-</body>
+            var startUp = function()
+            {
+                slideShow.initialize(obj, "standard", 0);
+            }
+        </script>
+    </head>
+    <body onload="startUp()">
+        <div id='container'> </div>
+        <button style='left:50%; color:black; opacity:.5' class='nav' onclick='javascript:slideShow.switchAnim()'><b>Toggle Animation</b></a>
+        <button style='left:2%; color:black; width:100px; height:50px; opacity:0.5' class='nav' onclick='javascript:slideShow.goPrev()'><b>Previous</b></a>
+        <button style='right:2%; color: black; width:100px; height:50px; opacity:0.5' class='nav' onclick='javascript:slideShow.goNext()'><b>Next</b></a>
+    </body>
 </html>
+
