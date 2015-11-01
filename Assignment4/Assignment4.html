@@ -1,0 +1,288 @@
+<html>
+    <head>
+        <title>
+            Daniel Renteria's Assignment 4
+        </title>
+        <style>
+            #imagePreview
+            {
+                height: 300px;
+                width: 300px;
+                display: block;
+            }
+        </style>
+        <script src="jquery-1.11.3.js" type="text/javascript"></script>
+        
+        <script>
+            var MAX_WIDTH = 512;
+            var MAX_HEIGHT = 512;
+            
+            var canvas;
+            var ctx;                var img;
+            var w2;                 var h2;
+            var img_x;              var img_y;
+            var crop_width = 72;    var crop_height = 72;
+            var crop_x;             var crop_y;
+            
+            var outputSizes  = "default";
+            var defaultSizes = [15, 30, 60, 90, 120]; // Random default sizes
+            var iOSSizes     = [512, 1024, 120, 180, 76, 152, 40, 80, 120, 29, 58, 87, 57, 114, 72, 144, 50, 100]; // All possible iOS sizes from website
+            var androidSizes = [50, 72, 96, 144, 192, 512]; // All possible android sizes from website
+            
+            
+            function imageUploaded() // Function when image is uploaded
+            {
+                var file = $('#uploadImage').get(0);
+                if(file.files[0].type.split("/")[0].toLowerCase() != "image")
+                {
+                    alert("Incorrect file type! Please upload an image file.");
+                }
+                if (file.files && file.files[0] && file.files[0].type.split("/")[0].toLowerCase() === "image")
+                {
+                    var FR = new FileReader();
+                    FR.onload = function(f)
+                    {
+                        var data = f.target.result;
+                        canvas = document.createElement("canvas");
+                        img    = document.createElement("img");
+                        img.onload= function()
+                        {
+                            var width  = img.width;
+                            var height = img.height;
+                            w2 = width;
+                            h2 = height;
+                            
+                            if (width > height)
+                            {
+                                if (width > MAX_WIDTH)
+                                {
+                                    h2 = height * MAX_WIDTH / width;
+                                    w2 = MAX_WIDTH;
+                                }
+                            }
+                            
+                            else
+                            {
+                                if (height > MAX_HEIGHT)
+                                {
+                                    w2 = width * MAX_HEIGHT / height;
+                                    h2 = MAX_HEIGHT;
+                                }
+                            }
+                            
+                            img_x   = (MAX_WIDTH-w2)/2;
+                            img_y  = (MAX_HEIGHT-h2)/2;
+                            
+                            crop_x = (MAX_WIDTH-crop_width)/2;
+                            crop_y = (MAX_HEIGHT-crop_height)/2;
+                            
+                            canvas.width  = MAX_WIDTH;
+                            canvas.height = MAX_HEIGHT;
+                            ctx = canvas.getContext("2d");
+                            
+                            document.body.innerHTML
+                            +="<button onclick='cropImage()'><b>Crop</b></button>"
+                            + "<button onclick='increaseSize()'>Increase Size</button>"
+                            + "<button onclick='decreaseSize()'>Decrease Size</button>"
+                            + "<button onclick='moveLeft()'>Move Left</button>"
+                            + "<button onclick='moveRight()'>Move Right</button>"
+                            + "<button onclick='moveUp()'>Move Up</button>"
+                            + "<button onclick='moveDown()'>Move Down</button>"
+                            + "<br /><div id='output' onchange='deviceSelect()' style='display: block'>"
+                            + "<select id='iOSOrAndroid'>"
+                            + "<option value='default'>Choose Device</option>"
+                            + "<option value='Android'>Android</option>"
+                            + "<option value='iOS'>iOS</option>"
+                            + "</select>"
+                            + "</div>";
+                            
+                            drawCanvas();
+                        }
+                        img.src = data;
+                    };
+                    FR.readAsDataURL( file.files[0] );
+                }
+            }
+
+            function increaseSize() // Increase size of image
+            {
+                var centerX = img_x + (w2/2);
+                var centerY = img_y + (h2/2);
+    
+                var ratio = 1/.95;
+                w2 *= ratio;
+                h2 *= ratio;
+    
+                img_x = centerX - (w2/2);
+                img_y = centerY - (h2/2);
+    
+                drawCanvas();
+            }
+        
+            function decreaseSize() // Decrease size of image
+            {
+                var centerX = img_x + (w2/2);
+                var centerY = img_y + (h2/2);
+                
+                var ratio = .95;
+                w2 *= ratio;
+                h2 *= ratio;
+                
+                img_x = centerX - (w2/2);
+                img_y = centerY - (h2/2);
+                
+                drawCanvas();
+            }
+
+            function moveUp()    // Move image up
+            {
+                img_y -= (h2/60);
+                drawCanvas();
+            }
+            function moveDown()  // Move image down
+            {
+                img_y += (h2/60);
+                drawCanvas();
+            }
+            function moveLeft()  // Move image left
+            {
+                img_x -= (w2/60);
+                drawCanvas();
+            }
+            function moveRight() // Move image right
+            {
+                img_x += (w2/60);
+                drawCanvas();
+            }
+        
+            function cropImage() // Function used to actually crop image
+            {
+                if((img_x < crop_x) && (img_y < crop_y) && ((img_x + w2) > (crop_x + crop_width)) && ((img_y + h2) > (crop_y + crop_height)))
+                {
+                    var newX = ((crop_x-img_x)/w2) * img.width;
+                    var newY = ((crop_y-img_y)/h2) * img.height;
+                    var newWidth  = crop_width * (img.width/w2);
+                    var newHeight = crop_height * (img.height/h2);
+                
+                    canvas.width  = newWidth;
+                    canvas.height = newHeight;
+                
+                    ctx.drawImage(img, newX, newY, newWidth, newHeight,  0, 0, canvas.width, canvas.height);
+                
+                    var croppedImage = new Image();
+                    croppedImage.src = canvas.toDataURL();
+                
+                    document.body.innerHTML += "<br />";
+                
+                    if(outputSizes == "Android")       // Android selected as device
+                    {
+                        for(var i=0; i<androidSizes.length; i++)
+                        {
+                            newImg(croppedImage, androidSizes[i]);
+                        }
+                    }
+                    else if(outputSizes == "iOS")     // iOS selected as device
+                    {
+                        for(var i=0; i<iOSSizes.length; i++)
+                        {
+                        newImg(croppedImage, iOSSizes[i]);
+                        }
+                    }
+                    else                              // No device selected, so default sizes being used
+                    {
+                        for(var i=0; i<defaultSizes.length; i++)
+                        {
+                        newImg(croppedImage, defaultSizes[i]);
+                        }
+                    }
+                
+                    canvas.width = MAX_WIDTH;
+                    canvas.height = MAX_HEIGHT;
+                }
+                
+                else
+                {
+                    alert("A portion of the cropped image is empty!");
+                }
+            }
+        
+            function newImg(imageInst, size) // Function called when uploading a different image
+            {
+                canvas.height = size;
+                canvas.width  = size;
+                ctx.drawImage(imageInst, 0, 0, canvas.width, canvas.height);
+            
+                document.body.innerHTML += "<img id='image"+size+"'>";
+            
+                var base64 = canvas.toDataURL("image/png");
+            
+                document.getElementById("image"+size).src = base64;
+                document.getElementById("image"+size).style.height = size + "px";
+                document.getElementById("image"+size).style.width = size + "px";
+            }
+        
+            function drawCanvas() // Creates and draws the HTML canvas
+            {
+                ctx.fillRect(0,0, MAX_WIDTH, MAX_HEIGHT);
+                ctx.globalAlpha = 0.25;
+                ctx.drawImage(img, img_x, img_y, w2, h2);
+                ctx.globalAlpha = 1;
+                ctx.strokeRect(crop_x, crop_y, crop_width, crop_height);
+                
+                // Creating crop window
+                var imgCroppedX   = ((crop_x-img_x)/w2) * img.width;
+                var imgCroppedY   = ((crop_y-img_y)/h2) * img.height;
+                var imgCroppedWid = crop_width * (img.width / w2);
+                var imgCroppedHei = crop_height * (img.height / h2);
+            
+                ctx.drawImage(img, imgCroppedX,  imgCroppedY,  imgCroppedWid, imgCroppedHei, crop_x, crop_y, crop_width, crop_height);
+            
+                var base64St = canvas.toDataURL("image/png");
+                document.getElementById("imagePreview").src = base64St;
+                document.getElementById("imagePreview").style.height = MAX_HEIGHT + "px";
+                document.getElementById("imagePreview").style.width= MAX_WIDTH + "px";
+            }
+        
+            function deviceSelect() // The selected device is changed
+            {
+                var selection = document.getElementById('iOSOrAndroid');
+                outputSizes = selection.options[selection.selectedIndex].value;
+            }
+        
+            document.onkeydown = keyWork;
+        
+            function keyWork(k) // Adds key functionality for manipulation
+            {
+                k = k || window.event;
+            
+                if(k.which == '38')
+                {
+                    moveUp();
+                }
+                else if(k.which == '40')
+                {
+                    moveDown();
+                }
+                else if(k.which == '37')
+                {
+                    moveLeft();
+                }
+                else if(k.which == '39')
+                {
+                    moveRight();
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <h3>Daniel Renteria's Assignment 4</h3>
+        <b>Instructions:</b><br>
+        1. Upload image file.<br>
+        2. Manipulate image as needed with buttons and/or arrow keys.<br>
+        3. Choose a device (will determine cropped image size).<br>
+        4. Click "Crop" to generate images for selected device.<br>
+        *Note: If you do not choose a device, default sizes will be generated.<br><br>
+        <input type="file" name="uploadImage" id="uploadImage" onChange="imageUploaded()">
+            <img draggable="false" id="imagePreview">
+    </body>
+</html>
