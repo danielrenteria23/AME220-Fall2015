@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Daniel Renteria Assignment 5</title>
+        <script type="text/javascript" src="script.js"></script>
+        <link type="text/css" rel="stylesheet" href="style.css">
+    </head>
+    <body onload='clock()' class="everything">
+        <h1>Daniel Renteria's Assignment 5</h1><br>
+        <div class="analog-clock">
+            <svg width="300" height="300" fill=>
+                <circle id="clock-face" cx="150" cy="150" r="145"/>
+                <circle style="color:red" cx="150" cy="150" r="3"/>
+                <line id="h-hand" x1="150" y1="150" x2="150" y2="85"/>
+                <line id="m-hand" x1="150" y1="150" x2="150" y2="60"/>
+                <line id="s-hand" x1="150" y1="150" x2="150" y2="30"/>
+                <line id="s-tail" x1="150" y1="150" x2="150" y2="130"/>
+                <text x="132" y="24">12</text>
+                <text x="275" y="150">3</text>
+                <text x="142" y="290">6</text>
+                <text x="13" y="150">9</text>
+            </svg>
+            <div class="time-text">
+                <span id="hr">00</span>
+                <span>:</span>
+                <span id="min">00</span>
+                <span>:</span>
+                <span id="sec">00</span>
+                <span id="suffix">--</span>
+            </div>
+        </div>
+        
+        <div id="addNew">
+            <select>
+                <option value='2' onclick='NYClock()'>New York City (+2:00)</option>
+                <option value='8'> Paris, France (+8:00) </option>
+            </select>
+            <a href=''> Add </a>
+            <a href=''> Cancel </a>
+        </div>
+        
+        <br><br>
+        <div>
+            <button style='left: 2%; color:black; opacity:1' class='nav' onclick='javascript:toggleFace()'><b>Toggle Clock Face</b></a>
+            <button style='left: 46%; color:black; opacity:1' class='nav' onclick='javascript:toggleNeedle()'><b>Toggle Needle</b></a>
+        </div>
+        
+        <div>
+            <a href='' style='background-color:white'>Current Location</a>
+            <a href='javascript:NYClock()' style='background-color:white'>New York City</a>
+            <a href='javascript:parisClock()' style='background-color:white'>Paris, France</a>
+        </div>
+    </body>
+</html>
